@@ -2,22 +2,25 @@ const inquirer = require("inquirer")
 const mysql = require("mysql2")
 const db = mysql.createConnection({
     host: "localHost",
-    user: "route",
+    user: "root",
     password: "Aubree",
-    dataBase: "employee_tracker",
+    database: "employee_tracker",
 })
-require ("console.table")
+require("console.table")
 
 function startApp() {
     inquirer.prompt([
         {
             type: "list",
             choices: ["View Employee", "View Department", "View Roles", "Add Employee", "Add Department", "Add Role", "Exit"],
-            name: "userselection"
+            name: "userselection",
+            message: "What would you like to do ?"
         }
     ]).then(({ userselection }) => {
-        switch (userselection) {
+        console.log(userselection)
+        switch(userselection) {
             case "View Employee":
+                console.log("VE");
                 viewEmployee();
                 break;
             case "View Department":
@@ -35,21 +38,23 @@ function startApp() {
             case "Add Role":
                 addRole();
                 break;
-            case "Exit":
+           default:
+               console.log("End")
                 db.end();
                 process.exit(0);
         }
-        })
+    })
 
 
 
 
 }
 
-function viewEmployee(){
-    db.query("select * from employee;",function(err,data){
-        if(err) throw err;
+function viewEmployee() {
+    db.query("select * from employee;", function (err, data) {
+        if (err) throw err;
         console.table(data)
+        startApp()
     })
 }
 
@@ -57,3 +62,20 @@ db.connect(function () {
     console.log("Welcome to Employee Tracker")
     startApp()
 })
+
+function viewDepartment() {
+    db.query("select * from department;", function (err, data) {
+        if (err) throw err;
+        console.table(data)
+        startApp()
+    })
+}
+
+
+function viewRoles() {
+    db.query("select * from roles;", function (err, data) {
+        if (err) throw err;
+        console.table(data)
+        startApp()
+    })
+}
